@@ -3,6 +3,9 @@ from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+
+import csv
+import json
  
 option = webdriver.ChromeOptions()
 # I use the following options as my machine is a window subsystem linux. 
@@ -11,7 +14,8 @@ option.add_argument('--headless')
 option.add_argument('--no-sandbox')
 option.add_argument('--disable-dev-sh-usage')
 # Replace YOUR-PATH-TO-CHROMEDRIVER with your chromedriver location
-driver = webdriver.Chrome('YOUR-PATH-TO-CHROMEDRIVER', options=option)
+# TODO(add path to browser driver)
+driver = webdriver.Chrome('', options=option)
  
 page = driver.get('https://www.imdb.com/chart/top/') # Getting page HTML through request
 soup = BeautifulSoup(driver.page_source, 'html.parser') # Parsing content using beautifulsoup
@@ -37,3 +41,11 @@ for anchor in first10:
     totalScrapedInfo.append(scrapedInfo) # Append the dictionary to the totalScrapedInformation list
     
 print(totalScrapedInfo) # Display the list with all the information we scraped
+
+#SAVing the content
+file = open('movies.json', mode='w', encoding='utf-8')
+file.write(json.dumps(totalScrapedInfo))
+ 
+writer = csv.writer(open("movies.csv", 'w'))
+for movie in totalScrapedInfo:
+    writer.writerow(movie.values())
